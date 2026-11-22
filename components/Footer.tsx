@@ -17,9 +17,9 @@ export default function Footer() {
     <footer className="border-t border-border-soft/70 bg-background/60 py-6">
       <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-4 px-4 sm:px-6">
         <p className="text-center text-xs leading-relaxed text-muted">
-          Kwitegura ikizami cy&rsquo;umutekano mu muhanda &mdash; ibibazo
-          n&rsquo;ibibazo ni ibigitegwa gusa. Menya amategeko y&rsquo;umu Rwanda
-          mu gitabo cya Leta.
+          Kwitegura ikizami cy&rsquo;umutekano wo muhanda &mdash; ibibazo
+          n&rsquo;ibibazo. Menya amategeko y&rsquo;umu Rwanda
+mubibazo bikundwa kubazwaho.
         </p>
 
         <div className="flex w-full flex-col items-center gap-3 border-t border-border-soft/60 pt-4">

@@ -56,7 +56,7 @@ export default function ResultsScreen({
   const stats = [
     {
       icon: Target,
-      label: "Umutwe wa ribwe",
+      label: "Amanota",
       value: `${correctCount}/${TOTAL_QUESTIONS}`,
       tone: "text-rwanda-blue",
       bg: "bg-rwanda-blue/10",
@@ -70,14 +70,14 @@ export default function ResultsScreen({
     },
     {
       icon: CheckCircle2,
-      label: "Byakozwe neza",
+      label: "Ibyo wakoze neza",
       value: String(correctCount),
       tone: "text-emerald-600 dark:text-emerald-400",
       bg: "bg-emerald-500/10",
     },
     {
       icon: XCircle,
-      label: "Byakozwe nabi",
+      label: "Ibyo wakoze nabi",
       value: String(wrongCount),
       tone: "text-red-600 dark:text-red-400",
       bg: "bg-red-500/10",
@@ -114,27 +114,26 @@ export default function ResultsScreen({
             passed ? "text-emerald-700 dark:text-emerald-300" : "text-red-700 dark:text-red-300",
           )}
         >
-          {passed ? "Uratsinze! Congrats!" : "Ntabwo waratsinze"}
+          {passed ? "Uratsinze! Congrats!" : "Watsizwe! Gerageza nanone!"}
         </h1>
         <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-muted">
           {passed ? (
             <>
-              Wabonye umutwe <strong className="text-emerald-700 dark:text-emerald-300">{correctCount}/{TOTAL_QUESTIONS}</strong>{" "}
-              ({percentage}%). Urazi neza umutekano mu muhanda &mdash;{" "}
-              <strong>waratsinze</strong> ikizami cy&rsquo;agaciro. Gerageza nanze
-              ibibazo bikomeye mu gusubiramo!
+              Wabonye amanota <strong className="text-emerald-700 dark:text-emerald-300">{correctCount}/{TOTAL_QUESTIONS}</strong>{" "}
+              ({percentage}%). Uzi neza amategeko y&rsquo;umutekano mu muhanda &mdash;{" "}
+              <strong>utsize</strong>
             </>
           ) : (
             <>
-              Wabonye umutwe <strong className="text-red-700 dark:text-red-300">{correctCount}/{TOTAL_QUESTIONS}</strong>{" "}
+              Wabonye amanota <strong className="text-red-700 dark:text-red-300">{correctCount}/{TOTAL_QUESTIONS}</strong>{" "}
               ({percentage}%). Kwitondera: ugomba byibura <strong>{PASS_MARK}/{TOTAL_QUESTIONS}</strong> ngo
-              utsinde. Subiramo ibisobanuro hano hasi, hanyuma ongera ugerageze!
+              utsinde. Subiramo ibisobanuro hano hasi, hanyuma wongera ugerageze!
             </>
           )}
         </p>
         {skippedCount > 0 && (
           <p className="mt-3 inline-block rounded-full bg-slate-500/10 px-4 py-1.5 text-sm font-medium text-muted">
-            Ibibazo {skippedCount} ntarabikoze (igihe cyarangiye cyangwa utarabyigera)
+            Ibibazo {skippedCount} nabyo wakoze (igihe cyarangiye cyangwa urabisize) - skipped
           </p>
         )}
       </section>
