@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { CarFront } from "lucide-react";
 import ControlBar from "@/components/ControlBar";
+import Footer from "@/components/Footer";
 import StartScreen from "@/components/StartScreen";
 import QuizScreen from "@/components/QuizScreen";
 import ResultsScreen from "@/components/ResultsScreen";
@@ -108,7 +109,7 @@ export default function Home() {
               <p className="text-sm font-bold text-foreground sm:text-base">
                 Ikizami cy&rsquo;Umutekano
               </p>
-              <p className="text-xs text-muted">mu Muhanda &middot; Kinyarwanda</p>
+              <p className="text-xs text-muted">wo Muhanda &middot; Kinyarwanda</p>
             </div>
           </div>
           <ControlBar
@@ -143,13 +144,7 @@ export default function Home() {
         )}
       </main>
 
-      <footer className="border-t border-border-soft/70 bg-background/60 py-6">
-        <p className="mx-auto max-w-4xl px-4 text-center text-xs leading-relaxed text-muted sm:px-6">
-          Kwitegura ikizami cy&rsquo;umutekano mu muhanda &mdash; ibiganiro n&rsquo;ibibazo
-          ni ibigitegwa gusa. Menya amategeko y&rsquo;umu Rwanda mu gitabo cya
-          Leta.
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 }
