@@ -19,17 +19,17 @@ const rules = [
   {
     icon: ListChecks,
     title: "Ibibazo 20",
-    body: `Buri gisomo kizatoranywa mu rutonde rw'ibibazo ${TOTAL_BANK}, mu buryo butunganye.`,
+    body: `Buri kibazo kizatoranywa mu rutonde rw'ibibazo ${TOTAL_BANK}, mu buryo butunganye.`,
   },
   {
     icon: Clock3,
     title: "Iminota 20",
-    body: "Ufite iminota 20 yo kumikora. Iyo igihe cyarangiye, ikizami kirangira ako kanya.",
+    body: "Ufite iminota 20 yo guhitamo ibisubizo. Iyo igihe cyarangiye, ikizami kirangira ako kanya.",
   },
   {
     icon: Award,
     title: "Gutsinda: 12/20",
-    body: `Ugomba gutsindira ${PASS_MARK}/20 (60%) cyangawa more ngo utsinde ikizami.`,
+    body: `Ugomba gutsindira ${PASS_MARK}/20 (60%) cyangawa hejuru yayo.`,
   },
 ];
 
@@ -47,19 +47,17 @@ export default function StartScreen({ onStart }: StartScreenProps) {
             <Car className="h-10 w-10 text-rwanda-blue" aria-hidden />
           </div>
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-rwanda-blue">
-            Umujyi wa Kigali &middot; Ikizami cyemewe
+            Prepared by Kamanzi Tony &middot; Biteguwe na Kamanzi Tony
           </p>
           <h1 className="max-w-2xl text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl">
             Ikizami cy&rsquo;Umutekano mu&nbsp;Muhanda
           </h1>
           <p className="max-w-xl text-lg leading-relaxed text-muted">
-            Kwitegura ikizami cy&rsquo;agaciro ka porogaramu y&rsquo;imyitozo ngora
-            mu muhanda. Menya amategeko, ibimenyetso, n&rsquo;umutekano wa muhanda
-            mu Kinyarwanda.
+           Uri kwiteura Gukorera uruhushya rw&rsquo;agateganyo rwo gutwara ibinyabiziga. Ibi bizagufasha kwitegura neza ikizami cy&rsquo;umutekano mu muhanda. Niba wumva witeguye, kanda kuri buto iri hasi kugirango utangire ikizami.
           </p>
           <div className="mt-2 flex items-center gap-2 rounded-full border border-rwanda-green/25 bg-rwanda-green/10 px-4 py-2 text-sm font-medium text-rwanda-green dark:text-emerald-300">
             <ShieldCheck className="h-4 w-4" aria-hidden />
-            Ibyo ukora hano ni igitegwa gusa &mdash; nta mafaranga yimoka
+            Gukora ibizami n&rsquo;ubuntu. - Free to all
           </div>
         </div>
       </section>
@@ -94,24 +92,14 @@ export default function StartScreen({ onStart }: StartScreenProps) {
         <ul className="mt-4 grid gap-3 text-sm leading-relaxed text-muted sm:grid-cols-2">
           <li className="flex gap-2">
             <span aria-hidden>&#9702;</span>
-            Ku buri kibazo, igihe uhawe igisubizo, uzabona neza ko ari cyo cyo cyangwa
-            kitari cyo, hamwe n&rsquo;ibisobanuro.
+          Iyo wishe ikibazo uhita ubona igisubizo cyacyo. Niba wumva ko igisubizo ari ikosa, ushobora gusubira inyuma ukagerageza kongera guhitamo igisubizo.
           </li>
+         
           <li className="flex gap-2">
             <span aria-hidden>&#9702;</span>
-            Ushobora guhindura icyo ugiye gukora cyangwa kurata ku bware. Iyo
-            uhawe igisubizo, ntihashobora kuhinduka.
+         Iyo ushoje ubona amanota wabonye yose ndese nibibazo watsinze. Niba watsinze, uzahabwa icyemezo cyemeza ko watsinze ikizami cy&rsquo;umutekano mu muhanda.
           </li>
-          <li className="flex gap-2">
-            <span aria-hidden>&#9702;</span>
-            Menya amakuru adashobora kuvugwa mu rutonde rw&rsquo;ibibazo 1&ndash;20
-            mu ntoki zawe.
-          </li>
-          <li className="flex gap-2">
-            <span aria-hidden>&#9702;</span>
-            Iyo umutekano urangiye, uzabona icyo watoye neza cyangwa cyari
-            ikosa hamwe n&rsquo;ibisobanuro by&rsquo;amategeko.
-          </li>
+        
         </ul>
       </section>
 
