@@ -5,6 +5,7 @@ import { CarFront } from "lucide-react";
 import ControlBar from "@/components/ControlBar";
 import Footer from "@/components/Footer";
 import StartScreen from "@/components/StartScreen";
+import WhatsAppLink from "@/components/WhatsAppLink";
 import QuizScreen from "@/components/QuizScreen";
 import ResultsScreen from "@/components/ResultsScreen";
 import type { Question } from "@/lib/questions";
@@ -112,12 +113,15 @@ export default function Home() {
               <p className="text-xs text-muted">wo Muhanda &middot; Kinyarwanda</p>
             </div>
           </div>
-          <ControlBar
-            dark={dark}
-            onToggleTheme={toggleTheme}
-            muted={muted}
-            onToggleSound={toggleSound}
-          />
+          <div className="flex items-center gap-2">
+            <WhatsAppLink />
+            <ControlBar
+              dark={dark}
+              onToggleTheme={toggleTheme}
+              muted={muted}
+              onToggleSound={toggleSound}
+            />
+          </div>
         </div>
       </header>
 
