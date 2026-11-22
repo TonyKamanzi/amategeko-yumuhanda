@@ -50,7 +50,7 @@ export default function StartScreen({ onStart }: StartScreenProps) {
             Prepared by Kamanzi Tony &middot; Biteguwe na Kamanzi Tony
           </p>
           <h1 className="max-w-2xl text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl">
-            Ikizami cy&rsquo;Umutekano mu&nbsp;Muhanda
+            Ikizami cy&rsquo;Umutekano wo&nbsp;Muhanda
           </h1>
           <p className="max-w-xl text-lg leading-relaxed text-muted">
            Uri kwiteura Gukorera uruhushya rw&rsquo;agateganyo rwo gutwara ibinyabiziga. Ibi bizagufasha kwitegura neza ikizami cy&rsquo;umutekano mu muhanda. Niba wumva witeguye, kanda kuri buto iri hasi kugirango utangire ikizami.
