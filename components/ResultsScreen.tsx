@@ -96,6 +96,7 @@ export default function ResultsScreen({
             : "border-red-500/40 bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-950/50 dark:to-rose-950/30",
         )}
       >
+        <div aria-hidden className="imigongo-band absolute inset-x-0 top-0 h-2" />
         <div
           className={cn(
             "mx-auto flex h-20 w-20 items-center justify-center rounded-3xl",

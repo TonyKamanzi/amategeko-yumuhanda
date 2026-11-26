@@ -2,7 +2,6 @@
 
 import {
   Award,
-  Car,
   CheckCircle2,
   Clock3,
   ListChecks,
@@ -10,6 +9,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { PASS_MARK, TOTAL_QUESTIONS, TOTAL_BANK } from "@/lib/quiz";
+import Image from "next/image";
 
 type StartScreenProps = {
   onStart: () => void;
@@ -38,22 +38,20 @@ export default function StartScreen({ onStart }: StartScreenProps) {
     <div className="animate-slide-up">
       {/* Welcome banner */}
       <section className="relative overflow-hidden rounded-3xl border border-border-soft bg-surface shadow-xl shadow-slate-200/50 dark:shadow-black/30">
-        <div
-          aria-hidden
-          className="h-2 w-full bg-gradient-to-r from-rwanda-blue via-rwanda-yellow to-rwanda-green"
-        />
+        <div aria-hidden className="imigongo-band h-3 w-full" />
         <div className="flex flex-col items-center gap-5 px-6 py-12 text-center sm:px-12 sm:py-16">
-          <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-rwanda-blue/10 ring-1 ring-rwanda-blue/25 dark:bg-rwanda-blue/15">
-            <Car className="h-10 w-10 text-rwanda-blue" aria-hidden />
-          </div>
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-rwanda-blue">
-            Prepared by Kamanzi Tony &middot; Biteguwe na Kamanzi Tony
-          </p>
-          <h1 className="max-w-2xl text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl">
-            Ikizami cy&rsquo;Umutekano wo&nbsp;Muhanda
+
+            <Image src="/assets/images.jpeg" alt="Rwanda Flag" width={200} height={200} className="rounded-4xl" />
+        
+
+          <h1 className="max-w-2xl text-2xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl">
+            Tangira Uyu Munsi witegure 
           </h1>
           <p className="max-w-xl text-lg leading-relaxed text-muted">
-           Uri kwiteura Gukorera uruhushya rw&rsquo;agateganyo rwo gutwara ibinyabiziga. Ibi bizagufasha kwitegura neza ikizami cy&rsquo;umutekano mu muhanda. Niba wumva witeguye, kanda kuri buto iri hasi kugirango utangire ikizami.
+            Uri kwiteura Gukorera uruhushya rw&rsquo;agateganyo rwo gutwara
+            ibinyabiziga. Ibi bizagufasha kwitegura neza ikizami
+            cy&rsquo;umutekano mu muhanda. Niba wumva witeguye, kanda kuri buto
+            iri hasi kugirango utangire ikizami.
           </p>
           <div className="mt-2 flex items-center gap-2 rounded-full border border-rwanda-green/25 bg-rwanda-green/10 px-4 py-2 text-sm font-medium text-rwanda-green dark:text-emerald-300">
             <ShieldCheck className="h-4 w-4" aria-hidden />
@@ -92,14 +90,17 @@ export default function StartScreen({ onStart }: StartScreenProps) {
         <ul className="mt-4 grid gap-3 text-sm leading-relaxed text-muted sm:grid-cols-2">
           <li className="flex gap-2">
             <span aria-hidden>&#9702;</span>
-          Iyo wishe ikibazo uhita ubona igisubizo cyacyo. Niba wumva ko igisubizo ari ikosa, ushobora gusubira inyuma ukagerageza kongera guhitamo igisubizo.
+            Iyo wishe ikibazo uhita ubona igisubizo cyacyo. Niba wumva ko
+            igisubizo ari ikosa, ushobora gusubira inyuma ukagerageza kongera
+            guhitamo igisubizo.
           </li>
-         
+
           <li className="flex gap-2">
             <span aria-hidden>&#9702;</span>
-         Iyo ushoje ubona amanota wabonye yose ndese nibibazo watsinze. Niba watsinze, uzahabwa icyemezo cyemeza ko watsinze ikizami cy&rsquo;umutekano mu muhanda.
+            Iyo ushoje ubona amanota wabonye yose ndese nibibazo watsinze. Niba
+            watsinze, uzahabwa icyemezo cyemeza ko watsinze ikizami
+            cy&rsquo;umutekano mu muhanda.
           </li>
-        
         </ul>
       </section>
 
