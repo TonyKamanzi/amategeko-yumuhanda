@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import PwaRegister from "@/components/PwaRegister";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,6 +18,37 @@ export const metadata: Metadata = {
   title: "Ikizami cy'Umutekano mu Muhanda | Driving Theory Quiz",
   description:
     "Kwitegura ikizami cy'umutekano mu muhanda mu Kinyarwanda: ibibazo 20, iminota 20, gutsinda 12/20.",
+  manifest: "/manifest.webmanifest",
+  applicationName: "Ikizami",
+  appleWebApp: {
+    capable: true,
+    title: "Ikizami",
+    statusBarStyle: "default",
+  },
+  icons: {
+    icon: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      {
+        url: "/icons/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+  },
+};
+
+// Next.js 14+ requires theme colours in the viewport export, not metadata.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#00a3e0" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a1220" },
+  ],
 };
 
 /**
@@ -46,6 +78,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         {children}
         <Analytics />
+        <PwaRegister />
       </body>
     </html>
   );
