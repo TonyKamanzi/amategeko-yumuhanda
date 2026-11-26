@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { track } from "@vercel/analytics";
 import { CarFront } from "lucide-react";
 import ControlBar from "@/components/ControlBar";
 import Footer from "@/components/Footer";
@@ -11,6 +12,7 @@ import ResultsScreen from "@/components/ResultsScreen";
 import type { Question } from "@/lib/questions";
 import {
   LOW_TIME_SECONDS,
+  PASS_MARK,
   QUIZ_DURATION_SECONDS,
   TOTAL_QUESTIONS,
   buildSession,
@@ -26,6 +28,17 @@ import { useDarkMode } from "@/lib/use-theme";
 
 type Screen = "start" | "quiz" | "results";
 
+const SESSION_KEY = "driving-quiz-session-v1";
+
+type PersistedSession = {
+  screen: Screen;
+  questions: Question[];
+  answers: (number | null)[];
+  current: number;
+  timeUsed: number;
+  expiresAt: number;
+};
+
 export default function Home() {
   const { dark, toggle: toggleTheme } = useDarkMode();
   const muted = useSyncExternalStore(subscribeMute, getMutedSnapshot, getMutedServerSnapshot);
@@ -36,15 +49,84 @@ export default function Home() {
   const [current, setCurrent] = useState(0);
   const [timeLeft, setTimeLeft] = useState(QUIZ_DURATION_SECONDS);
   const [timeUsed, setTimeUsed] = useState(0);
+  const [expiresAt, setExpiresAt] = useState<number | null>(null);
+  const [hydrated, setHydrated] = useState(false);
 
-  // 20-minute countdown while the quiz is running.
+  // Resume an in-progress quiz after a refresh. Storage is read after mount so
+  // the server-rendered start screen still matches the first client render.
   useEffect(() => {
-    if (screen !== "quiz") return;
-    const id = window.setInterval(() => {
-      setTimeLeft((t) => Math.max(0, t - 1));
-    }, 1000);
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (cancelled) return;
+      try {
+        const raw = localStorage.getItem(SESSION_KEY);
+        if (raw) {
+          const saved = JSON.parse(raw) as PersistedSession;
+          const valid =
+            saved.screen === "quiz" &&
+            Array.isArray(saved.questions) &&
+            saved.questions.length === TOTAL_QUESTIONS &&
+            Array.isArray(saved.answers) &&
+            saved.answers.length === TOTAL_QUESTIONS &&
+            typeof saved.expiresAt === "number" &&
+            Number.isFinite(saved.expiresAt);
+
+          if (valid) {
+            const remaining = Math.max(
+              0,
+              Math.ceil((saved.expiresAt - Date.now()) / 1000),
+            );
+            setQuestions(saved.questions);
+            setAnswers(saved.answers);
+            setCurrent(
+              Math.min(Math.max(0, saved.current), TOTAL_QUESTIONS - 1),
+            );
+            setTimeLeft(remaining);
+            setTimeUsed(Math.min(QUIZ_DURATION_SECONDS, QUIZ_DURATION_SECONDS - remaining));
+            setExpiresAt(saved.expiresAt);
+            setScreen(remaining > 0 ? "quiz" : "results");
+          }
+        }
+      } catch {
+        // Ignore corrupt or unavailable storage and start normally.
+      }
+      setHydrated(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Persist only while a quiz is active; clear it on start/results screens.
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      if (screen === "quiz" && questions.length > 0 && expiresAt !== null) {
+        const session: PersistedSession = {
+          screen,
+          questions,
+          answers,
+          current,
+          timeUsed,
+          expiresAt,
+        };
+        localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      } else {
+        localStorage.removeItem(SESSION_KEY);
+      }
+    } catch {
+      // Storage may be blocked; the quiz still works in memory.
+    }
+  }, [hydrated, screen, questions, answers, current, timeUsed, expiresAt]);
+
+  // Countdown derived from the deadline so time keeps running across refreshes.
+  useEffect(() => {
+    if (screen !== "quiz" || expiresAt === null) return;
+    const update = () =>
+      setTimeLeft(Math.max(0, Math.ceil((expiresAt - Date.now()) / 1000)));
+    const id = window.setInterval(update, 1000);
     return () => window.clearInterval(id);
-  }, [screen]);
+  }, [screen, expiresAt]);
 
   // Gentle ticking reminder during the last 3 minutes.
   useEffect(() => {
@@ -54,16 +136,41 @@ export default function Home() {
     }
   }, [screen, timeLeft]);
 
+  const completeQuiz = useCallback(
+    (source: "manual" | "timeout") => {
+      const used =
+        source === "timeout"
+          ? QUIZ_DURATION_SECONDS
+          : QUIZ_DURATION_SECONDS - Math.max(0, timeLeft);
+      const score = answers.reduce<number>(
+        (total, answer, i) =>
+          answer !== null && answer === questions[i].correctIndex
+            ? total + 1
+            : total,
+        0,
+      );
+
+      track("quiz_completed", {
+        score,
+        total: TOTAL_QUESTIONS,
+        passed: score >= PASS_MARK,
+        duration_seconds: used,
+        source,
+      });
+
+      setTimeUsed(used);
+      setScreen("results");
+    },
+    [answers, questions, timeLeft],
+  );
+
   // Time expired — auto-submit (deferred so the interval state settles first).
   const expired = screen === "quiz" && timeLeft <= 0;
   useEffect(() => {
     if (!expired) return;
-    const id = window.setTimeout(() => {
-      setTimeUsed(QUIZ_DURATION_SECONDS);
-      setScreen("results");
-    }, 0);
+    const id = window.setTimeout(() => completeQuiz("timeout"), 0);
     return () => window.clearTimeout(id);
-  }, [expired]);
+  }, [expired, completeQuiz]);
 
   const startQuiz = useCallback(() => {
     playSound("select");
@@ -72,7 +179,12 @@ export default function Home() {
     setCurrent(0);
     setTimeLeft(QUIZ_DURATION_SECONDS);
     setTimeUsed(0);
+    setExpiresAt(Date.now() + QUIZ_DURATION_SECONDS * 1000);
     setScreen("quiz");
+    track("quiz_start", {
+      question_count: TOTAL_QUESTIONS,
+      duration_seconds: QUIZ_DURATION_SECONDS,
+    });
   }, []);
 
   const handleSelect = useCallback(
@@ -82,15 +194,21 @@ export default function Home() {
         next[current] = choiceIndex;
         return next;
       });
+      const question = questions[current];
+      if (question) {
+        track("question_answered", {
+          question: current + 1,
+          correct: choiceIndex === question.correctIndex,
+        });
+      }
     },
-    [current],
+    [current, questions],
   );
 
   const handleFinish = useCallback(() => {
-    setTimeUsed(QUIZ_DURATION_SECONDS - Math.max(0, timeLeft));
     playSound("select");
-    setScreen("results");
-  }, [timeLeft]);
+    completeQuiz("manual");
+  }, [completeQuiz]);
 
   const toggleSound = useCallback(() => {
     const next = !muted;
