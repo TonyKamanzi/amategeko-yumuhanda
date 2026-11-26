@@ -254,7 +254,7 @@ export default function QuizScreen({
             className="inline-flex items-center justify-center gap-2 rounded-full border border-border-soft bg-background px-6 py-3 text-sm font-semibold text-foreground transition-all duration-200 hover:border-rwanda-blue/50 hover:text-rwanda-blue focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rwanda-blue active:scale-95 disabled:pointer-events-none disabled:opacity-40"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden />
-            Ibibazo birekuru
+            Ibibazo bibanza
           </button>
           {current === TOTAL_QUESTIONS - 1 ? (
             <button
@@ -284,7 +284,7 @@ export default function QuizScreen({
         className="mt-6 rounded-3xl border border-border-soft bg-surface p-6 shadow-sm sm:p-8"
       >
         <h2 className="text-sm font-bold uppercase tracking-wider text-muted">
-          Jumper ku kibazo nawe
+          Hitamo ikibazo ushaka gusubiramo
         </h2>
         <ol className="mt-4 grid grid-cols-5 gap-2 sm:grid-cols-10">
           {questions.map((q, index) => {
@@ -315,7 +315,7 @@ export default function QuizScreen({
         </ol>
         <div className="mt-5 flex flex-wrap items-center gap-4 text-xs text-muted">
           <span className="inline-flex items-center gap-1.5">
-            <span className="h-3 w-3 rounded-sm bg-rwanda-blue" aria-hidden /> Uzamuriyeho
+            <span className="h-3 w-3 rounded-sm bg-rwanda-blue" aria-hidden /> Ikibazo Uriho
           </span>
           <span className="inline-flex items-center gap-1.5">
             <span className="h-3 w-3 rounded-sm bg-emerald-400" aria-hidden /> Byakozwe neza

@@ -46,9 +46,7 @@ export default function StartScreen({ onStart }: StartScreenProps) {
           <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-rwanda-blue/10 ring-1 ring-rwanda-blue/25 dark:bg-rwanda-blue/15">
             <Car className="h-10 w-10 text-rwanda-blue" aria-hidden />
           </div>
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-rwanda-blue">
-            Prepared by Kamanzi Tony &middot; Biteguwe na Kamanzi Tony
-          </p>
+        
           <h1 className="max-w-2xl text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl">
             Ikizami cy&rsquo;Umutekano wo&nbsp;Muhanda
           </h1>
