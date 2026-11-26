@@ -18,6 +18,9 @@
   --color-rwanda-blue: #00a3e0;
   --color-rwanda-yellow: #fad105;
   --color-rwanda-green: #20603d;
+  /* Traditional imigongo ochre/red accent, used to warm up light mode */
+  --color-imigongo-red: #c14b2c;
+  --color-imigongo-cream: #fff6e5;
 
   --animate-fade-in: fade-in 0.4s ease-out both;
   --animate-slide-up: slide-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -86,11 +89,11 @@
   }
 }
 
-/* Soft palette: airy slate in light mode, deep navy in dark mode */
+/* Light mode: airy slate with a warm cream surface; dark mode: deep navy */
 :root {
   --background: #f4f8fb;
   --foreground: #10243a;
-  --surface: #ffffff;
+  --surface: #fffdf7;
   --muted: #5a7184;
   --border-soft: #e2ecf3;
 }
@@ -133,12 +136,13 @@ body {
   position: relative;
   isolation: isolate;
   background-image:
-    url("/patterns/imigongo-tile.svg"),
-    radial-gradient(52rem 30rem at 85% -10%, rgb(0 163 224 / 0.14), transparent 60%),
-    radial-gradient(46rem 26rem at 8% 108%, rgb(32 96 61 / 0.13), transparent 60%),
-    radial-gradient(38rem 22rem at 105% 80%, rgb(250 209 5 / 0.09), transparent 60%);
-  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
-  background-size: 80px 80px, auto, auto, auto;
+    url("/patterns/imigongo-tile-light.svg"),
+    radial-gradient(52rem 30rem at 85% -10%, rgb(0 163 224 / 0.22), transparent 60%),
+    radial-gradient(46rem 26rem at 8% 108%, rgb(32 96 61 / 0.2), transparent 60%),
+    radial-gradient(38rem 22rem at 105% 80%, rgb(250 209 5 / 0.18), transparent 60%),
+    radial-gradient(34rem 24rem at -10% 30%, rgb(193 75 44 / 0.13), transparent 60%);
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+  background-size: 80px 80px, auto, auto, auto, auto;
 }
 
 .dark .bg-scene {
