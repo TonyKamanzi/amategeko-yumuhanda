@@ -38,10 +38,7 @@ export default function StartScreen({ onStart }: StartScreenProps) {
     <div className="animate-slide-up">
       {/* Welcome banner */}
       <section className="relative overflow-hidden rounded-3xl border border-border-soft bg-surface shadow-xl shadow-slate-200/50 dark:shadow-black/30">
-        <div
-          aria-hidden
-          className="h-2 w-full bg-gradient-to-r from-rwanda-blue via-rwanda-yellow to-rwanda-green"
-        />
+        <div aria-hidden className="imigongo-band h-3 w-full" />
         <div className="flex flex-col items-center gap-5 px-6 py-12 text-center sm:px-12 sm:py-16">
 
             <Image src="/assets/images.jpeg" alt="Rwanda Flag" width={200} height={200} className="rounded-4xl" />

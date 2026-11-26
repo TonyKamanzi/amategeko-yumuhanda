@@ -73,8 +73,9 @@ export default function QuizScreen({
       {/* Status bar: timer + progress + score */}
       <section
         aria-label="Imiterere y'ikizami"
-        className="rounded-2xl border border-border-soft bg-surface p-4 shadow-sm sm:p-5"
+        className="relative overflow-hidden rounded-2xl border border-border-soft bg-surface p-4 shadow-sm sm:p-5"
       >
+        <div aria-hidden className="imigongo-band absolute inset-x-0 top-0 h-2" />
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm font-semibold uppercase tracking-wider text-muted">
             Ikibazo <span className="text-foreground">{current + 1}</span> /{" "}

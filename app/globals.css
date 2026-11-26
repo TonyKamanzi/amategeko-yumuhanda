@@ -104,22 +104,115 @@
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
-/* Subtle gradient wash used behind the app shell */
+/* Bold flag-coloured chevron band used on cards and banners */
+.imigongo-band {
+  background-color: #00a3e0;
+  background-image: url("/patterns/imigongo-band.svg");
+  background-position: center;
+  background-repeat: repeat-x;
+  background-size: 120px 100%;
+  animation: imigongo-band-sweep 1.2s ease-out both;
+}
+
+@keyframes imigongo-band-sweep {
+  from {
+    background-position-x: -120px;
+  }
+  to {
+    background-position-x: 0;
+  }
+}
+
+/* Imigongo chevrons on top of a soft gradient wash behind the app shell */
 .bg-scene {
+  position: relative;
+  isolation: isolate;
   background-image:
+    url("/patterns/imigongo-tile.svg"),
     radial-gradient(52rem 30rem at 85% -10%, rgb(0 163 224 / 0.14), transparent 60%),
     radial-gradient(46rem 26rem at 8% 108%, rgb(32 96 61 / 0.13), transparent 60%),
     radial-gradient(38rem 22rem at 105% 80%, rgb(250 209 5 / 0.09), transparent 60%);
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
+  background-size: 80px 80px, auto, auto, auto;
 }
 
 .dark .bg-scene {
   background-image:
+    url("/patterns/imigongo-tile.svg"),
     radial-gradient(52rem 30rem at 85% -10%, rgb(0 163 224 / 0.16), transparent 60%),
     radial-gradient(46rem 26rem at 8% 108%, rgb(32 96 61 / 0.22), transparent 60%),
     radial-gradient(38rem 22rem at 105% 80%, rgb(250 209 5 / 0.07), transparent 60%);
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
+  background-size: 80px 80px, auto, auto, auto;
+}
+
+/* Animated imigongo rails on the left and right edges of wide screens */
+.imigongo-rail {
+  --enter-shift: -100%;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+  width: clamp(56px, 9vw, 140px);
+  pointer-events: none;
+  background-image: url("/patterns/imigongo-side.svg");
+  background-repeat: repeat-y;
+  background-size: 100% 120px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+  animation:
+    imigongo-drift 26s linear infinite,
+    imigongo-breathe 7s ease-in-out infinite,
+    imigongo-enter 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.imigongo-rail-left {
+  left: 0;
+}
+
+.imigongo-rail-right {
+  --enter-shift: 100%;
+  right: 0;
+  transform: scaleX(-1);
+  animation-delay: -13s, -3.5s, 0s;
+}
+
+@keyframes imigongo-drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 -240px;
+  }
+}
+
+@keyframes imigongo-breathe {
+  0%,
+  100% {
+    opacity: 0.62;
+  }
+  50% {
+    opacity: 0.92;
+  }
+}
+
+@keyframes imigongo-enter {
+  from {
+    translate: var(--enter-shift) 0;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .imigongo-rail,
+  .imigongo-band {
+    animation: none;
+  }
 }

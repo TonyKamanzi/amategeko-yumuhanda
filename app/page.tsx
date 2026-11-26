@@ -100,7 +100,10 @@ export default function Home() {
 
   return (
     <div className="bg-scene flex min-h-screen flex-col">
-      <header className="sticky top-0 z-20 border-b border-border-soft/70 bg-background/85 backdrop-blur-md">
+      <div aria-hidden className="imigongo-rail imigongo-rail-left hidden lg:block" />
+      <div aria-hidden className="imigongo-rail imigongo-rail-right hidden lg:block" />
+      <header className="relative sticky top-0 z-20 border-b border-border-soft/70 bg-background/85 backdrop-blur-md">
+        <div aria-hidden className="imigongo-band absolute inset-x-0 bottom-0 h-1.5" />
         <div className="mx-auto flex w-full max-w-4xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-rwanda-blue to-rwanda-green text-white shadow-md shadow-rwanda-blue/20">
