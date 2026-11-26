@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { track } from "@vercel/analytics";
 import { CarFront } from "lucide-react";
 import ControlBar from "@/components/ControlBar";
 import Footer from "@/components/Footer";
@@ -11,6 +12,7 @@ import ResultsScreen from "@/components/ResultsScreen";
 import type { Question } from "@/lib/questions";
 import {
   LOW_TIME_SECONDS,
+  PASS_MARK,
   QUIZ_DURATION_SECONDS,
   TOTAL_QUESTIONS,
   buildSession,
@@ -134,16 +136,41 @@ export default function Home() {
     }
   }, [screen, timeLeft]);
 
+  const completeQuiz = useCallback(
+    (source: "manual" | "timeout") => {
+      const used =
+        source === "timeout"
+          ? QUIZ_DURATION_SECONDS
+          : QUIZ_DURATION_SECONDS - Math.max(0, timeLeft);
+      const score = answers.reduce<number>(
+        (total, answer, i) =>
+          answer !== null && answer === questions[i].correctIndex
+            ? total + 1
+            : total,
+        0,
+      );
+
+      track("quiz_completed", {
+        score,
+        total: TOTAL_QUESTIONS,
+        passed: score >= PASS_MARK,
+        duration_seconds: used,
+        source,
+      });
+
+      setTimeUsed(used);
+      setScreen("results");
+    },
+    [answers, questions, timeLeft],
+  );
+
   // Time expired — auto-submit (deferred so the interval state settles first).
   const expired = screen === "quiz" && timeLeft <= 0;
   useEffect(() => {
     if (!expired) return;
-    const id = window.setTimeout(() => {
-      setTimeUsed(QUIZ_DURATION_SECONDS);
-      setScreen("results");
-    }, 0);
+    const id = window.setTimeout(() => completeQuiz("timeout"), 0);
     return () => window.clearTimeout(id);
-  }, [expired]);
+  }, [expired, completeQuiz]);
 
   const startQuiz = useCallback(() => {
     playSound("select");
@@ -154,6 +181,10 @@ export default function Home() {
     setTimeUsed(0);
     setExpiresAt(Date.now() + QUIZ_DURATION_SECONDS * 1000);
     setScreen("quiz");
+    track("quiz_start", {
+      question_count: TOTAL_QUESTIONS,
+      duration_seconds: QUIZ_DURATION_SECONDS,
+    });
   }, []);
 
   const handleSelect = useCallback(
@@ -163,15 +194,21 @@ export default function Home() {
         next[current] = choiceIndex;
         return next;
       });
+      const question = questions[current];
+      if (question) {
+        track("question_answered", {
+          question: current + 1,
+          correct: choiceIndex === question.correctIndex,
+        });
+      }
     },
-    [current],
+    [current, questions],
   );
 
   const handleFinish = useCallback(() => {
-    setTimeUsed(QUIZ_DURATION_SECONDS - Math.max(0, timeLeft));
     playSound("select");
-    setScreen("results");
-  }, [timeLeft]);
+    completeQuiz("manual");
+  }, [completeQuiz]);
 
   const toggleSound = useCallback(() => {
     const next = !muted;
