@@ -26,6 +26,17 @@ import { useDarkMode } from "@/lib/use-theme";
 
 type Screen = "start" | "quiz" | "results";
 
+const SESSION_KEY = "driving-quiz-session-v1";
+
+type PersistedSession = {
+  screen: Screen;
+  questions: Question[];
+  answers: (number | null)[];
+  current: number;
+  timeUsed: number;
+  expiresAt: number;
+};
+
 export default function Home() {
   const { dark, toggle: toggleTheme } = useDarkMode();
   const muted = useSyncExternalStore(subscribeMute, getMutedSnapshot, getMutedServerSnapshot);
@@ -36,15 +47,84 @@ export default function Home() {
   const [current, setCurrent] = useState(0);
   const [timeLeft, setTimeLeft] = useState(QUIZ_DURATION_SECONDS);
   const [timeUsed, setTimeUsed] = useState(0);
+  const [expiresAt, setExpiresAt] = useState<number | null>(null);
+  const [hydrated, setHydrated] = useState(false);
 
-  // 20-minute countdown while the quiz is running.
+  // Resume an in-progress quiz after a refresh. Storage is read after mount so
+  // the server-rendered start screen still matches the first client render.
   useEffect(() => {
-    if (screen !== "quiz") return;
-    const id = window.setInterval(() => {
-      setTimeLeft((t) => Math.max(0, t - 1));
-    }, 1000);
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (cancelled) return;
+      try {
+        const raw = localStorage.getItem(SESSION_KEY);
+        if (raw) {
+          const saved = JSON.parse(raw) as PersistedSession;
+          const valid =
+            saved.screen === "quiz" &&
+            Array.isArray(saved.questions) &&
+            saved.questions.length === TOTAL_QUESTIONS &&
+            Array.isArray(saved.answers) &&
+            saved.answers.length === TOTAL_QUESTIONS &&
+            typeof saved.expiresAt === "number" &&
+            Number.isFinite(saved.expiresAt);
+
+          if (valid) {
+            const remaining = Math.max(
+              0,
+              Math.ceil((saved.expiresAt - Date.now()) / 1000),
+            );
+            setQuestions(saved.questions);
+            setAnswers(saved.answers);
+            setCurrent(
+              Math.min(Math.max(0, saved.current), TOTAL_QUESTIONS - 1),
+            );
+            setTimeLeft(remaining);
+            setTimeUsed(Math.min(QUIZ_DURATION_SECONDS, QUIZ_DURATION_SECONDS - remaining));
+            setExpiresAt(saved.expiresAt);
+            setScreen(remaining > 0 ? "quiz" : "results");
+          }
+        }
+      } catch {
+        // Ignore corrupt or unavailable storage and start normally.
+      }
+      setHydrated(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Persist only while a quiz is active; clear it on start/results screens.
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      if (screen === "quiz" && questions.length > 0 && expiresAt !== null) {
+        const session: PersistedSession = {
+          screen,
+          questions,
+          answers,
+          current,
+          timeUsed,
+          expiresAt,
+        };
+        localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      } else {
+        localStorage.removeItem(SESSION_KEY);
+      }
+    } catch {
+      // Storage may be blocked; the quiz still works in memory.
+    }
+  }, [hydrated, screen, questions, answers, current, timeUsed, expiresAt]);
+
+  // Countdown derived from the deadline so time keeps running across refreshes.
+  useEffect(() => {
+    if (screen !== "quiz" || expiresAt === null) return;
+    const update = () =>
+      setTimeLeft(Math.max(0, Math.ceil((expiresAt - Date.now()) / 1000)));
+    const id = window.setInterval(update, 1000);
     return () => window.clearInterval(id);
-  }, [screen]);
+  }, [screen, expiresAt]);
 
   // Gentle ticking reminder during the last 3 minutes.
   useEffect(() => {
@@ -72,6 +152,7 @@ export default function Home() {
     setCurrent(0);
     setTimeLeft(QUIZ_DURATION_SECONDS);
     setTimeUsed(0);
+    setExpiresAt(Date.now() + QUIZ_DURATION_SECONDS * 1000);
     setScreen("quiz");
   }, []);
 
