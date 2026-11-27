@@ -233,12 +233,12 @@ export default function QuizScreen({
               {isCorrect ? (
                 <>
                   <CheckCircle2 className="h-5 w-5" aria-hidden />
-                  Ni cyo cyo! Cyawe neza.
+                  Yego ! Igisubizo cyawe ni cyo cy&rsquo;ukuri.
                 </>
               ) : (
                 <>
                   <XCircle className="h-5 w-5" aria-hidden />
-                  Ntabwo ari cyo. Igisubizo cy&rsquo;ukuri ni{" "}
+                    Oya ! Igisubizo cyawe si cyo cy&rsquo;ukuri. Igisubizo cy&rsquo;ukuri ni {""}
                   {String.fromCharCode(65 + question.correctIndex)}.
                 </>
               )}

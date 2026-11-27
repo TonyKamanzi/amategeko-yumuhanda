@@ -54,10 +54,10 @@ export default function ResultsScreen({
   const shareResult = useCallback(async () => {
     const url = window.location.origin;
     const text = passed
-      ? `Uratsinze! Nabonye ${correctCount}/${TOTAL_QUESTIONS} (${percentage}%) mu kizami cy'umutekano mu muhanda. Gerageza nawe!`
-      : `Nabonye ${correctCount}/${TOTAL_QUESTIONS} (${percentage}%) mu kizami cy'umutekano mu muhanda. Gerageza nawe!`;
+      ? `Uratsinze! Nabonye ${correctCount}/${TOTAL_QUESTIONS} (${percentage}%) mu kizami cy'ukwitegura gukorera uruhusha rw'agateganyo rwo gutwara imodoka. Gerageza nawe!`
+      : `Nabonye ${correctCount}/${TOTAL_QUESTIONS} (${percentage}%) mu kizami cy'ukwitegura gukorera uruhusha rw'agateganyo rwo gutwara imodoka. Gerageza nawe!`;
     const shareData = {
-      title: "Ikizami cy'Umutekano mu Muhanda",
+      title: "Ikizami cy'Ukwitegura gukorera uruhusha rw'agateganyo rwo gutwara imodoka",
       text,
       url,
     };
@@ -330,13 +330,13 @@ export default function ResultsScreen({
                         {isChosen && !isRight && (
                           <span className="ml-2 inline-flex shrink-0 items-center gap-1 rounded-full bg-red-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-700 dark:text-red-300">
                             <XCircle className="h-3 w-3" aria-hidden />
-                            Uwatoye
+                            watoye
                           </span>
                         )}
                         {isChosen && isRight && (
                           <span className="ml-2 inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
                             <Trophy className="h-3 w-3" aria-hidden />
-                            Uwatoye
+                            watoye
                           </span>
                         )}
                       </li>
