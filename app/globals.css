@@ -142,6 +142,16 @@
   --border-soft: #22334d;
 }
 
+/* Text-size preference for older learners. Tailwind's rem-based utilities
+   scale along with the root size, keeping spacing proportional. */
+html[data-text-size="large"] {
+  font-size: 125%;
+}
+
+html[data-text-size="xlarge"] {
+  font-size: 150%;
+}
+
 body {
   background-color: var(--background);
   color: var(--foreground);

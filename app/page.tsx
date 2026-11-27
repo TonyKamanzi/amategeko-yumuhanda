@@ -24,6 +24,7 @@ import {
   setMuted,
   subscribeMute,
 } from "@/lib/sound";
+import { useTextSize } from "@/lib/use-text-size";
 import { useDarkMode } from "@/lib/use-theme";
 
 type Screen = "start" | "quiz" | "results";
@@ -41,6 +42,7 @@ type PersistedSession = {
 
 export default function Home() {
   const { dark, toggle: toggleTheme } = useDarkMode();
+  const { textSize, cycle: cycleTextSize } = useTextSize();
   const muted = useSyncExternalStore(subscribeMute, getMutedSnapshot, getMutedServerSnapshot);
 
   const [screen, setScreen] = useState<Screen>("start");
@@ -241,6 +243,8 @@ export default function Home() {
               onToggleTheme={toggleTheme}
               muted={muted}
               onToggleSound={toggleSound}
+              textSize={textSize}
+              onCycleTextSize={cycleTextSize}
             />
           </div>
         </div>

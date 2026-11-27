@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   ArrowLeft,
@@ -55,18 +55,59 @@ export default function QuizScreen({
     }
   }, [isAnswered, current]);
 
-  function handleSelect(choiceIndex: number) {
-    if (isAnswered) return;
-    const correct = choiceIndex === question.correctIndex;
-    playSound(correct ? "correct" : "incorrect");
-    onSelect(choiceIndex);
-  }
+  const handleSelect = useCallback(
+    (choiceIndex: number) => {
+      if (isAnswered) return;
+      const correct = choiceIndex === question.correctIndex;
+      playSound(correct ? "correct" : "incorrect");
+      onSelect(choiceIndex);
+    },
+    [isAnswered, question.correctIndex, onSelect],
+  );
 
-  function handleNavigate(index: number) {
-    if (index === current || index < 0 || index >= TOTAL_QUESTIONS) return;
-    playSound("select");
-    onNavigate(index);
-  }
+  const handleNavigate = useCallback(
+    (index: number) => {
+      if (index === current || index < 0 || index >= TOTAL_QUESTIONS) return;
+      playSound("select");
+      onNavigate(index);
+    },
+    [current, onNavigate],
+  );
+
+  // A–D answers the current question; arrow keys move between questions.
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      if (event.repeat) return;
+
+      const target = event.target;
+      if (
+        target instanceof HTMLElement &&
+        (target.isContentEditable || target.closest("input, textarea, select, [contenteditable='true']"))
+      ) {
+        return;
+      }
+
+      const choiceIndex = ["a", "b", "c", "d"].indexOf(event.key.toLowerCase());
+      if (choiceIndex !== -1) {
+        if (choiceIndex >= question.choices.length || isAnswered) return;
+        event.preventDefault();
+        handleSelect(choiceIndex);
+        return;
+      }
+
+      if (event.key === "ArrowLeft" && current > 0) {
+        event.preventDefault();
+        handleNavigate(current - 1);
+      } else if (event.key === "ArrowRight" && current < TOTAL_QUESTIONS - 1) {
+        event.preventDefault();
+        handleNavigate(current + 1);
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [current, isAnswered, question.choices.length, handleNavigate, handleSelect]);
 
   return (
     <div className="animate-fade-in">
@@ -168,6 +209,7 @@ export default function QuizScreen({
                     type="button"
                     onClick={() => handleSelect(index)}
                     aria-pressed={isChosen}
+                    aria-keyshortcuts={String.fromCharCode(65 + index)}
                     className={cn(
                       "flex w-full items-start gap-3 rounded-2xl border p-4 text-left transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rwanda-blue",
                       !isAnswered &&
@@ -252,6 +294,7 @@ export default function QuizScreen({
             type="button"
             onClick={() => handleNavigate(current - 1)}
             disabled={current === 0}
+            aria-keyshortcuts="ArrowLeft"
             className="inline-flex items-center justify-center gap-2 rounded-full border border-border-soft bg-background px-6 py-3 text-sm font-semibold text-foreground transition-all duration-200 hover:border-rwanda-blue/50 hover:text-rwanda-blue focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rwanda-blue active:scale-95 disabled:pointer-events-none disabled:opacity-40"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden />
@@ -270,6 +313,7 @@ export default function QuizScreen({
             <button
               type="button"
               onClick={() => handleNavigate(current + 1)}
+              aria-keyshortcuts="ArrowRight"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-rwanda-blue px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-rwanda-blue/30 transition-all duration-200 hover:scale-[1.02] hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rwanda-blue active:scale-95"
             >
               Ikibazo gikurikira
@@ -277,6 +321,18 @@ export default function QuizScreen({
             </button>
           )}
         </div>
+
+        {/* Visible keyboard shortcut hint */}
+        <p className="mt-4 flex flex-wrap items-center gap-1.5 text-xs text-muted">
+          <span>Amabuto magufi:</span>
+          <kbd className="rounded border border-border-soft bg-background px-1.5 py-0.5 font-mono text-[10px]">A</kbd>
+          <span>&ndash;</span>
+          <kbd className="rounded border border-border-soft bg-background px-1.5 py-0.5 font-mono text-[10px]">D</kbd>
+          <span>guhitamo igisubizo &middot;</span>
+          <kbd className="rounded border border-border-soft bg-background px-1.5 py-0.5 font-mono text-[10px]">&larr;</kbd>
+          <kbd className="rounded border border-border-soft bg-background px-1.5 py-0.5 font-mono text-[10px]">&rarr;</kbd>
+          <span>Guhitamo ibibazo</span>
+        </p>
       </section>
 
       {/* Jump navigation grid */}
