@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
+import { track } from "@vercel/analytics";
 import {
   BookOpenCheck,
   CheckCircle2,
@@ -9,11 +10,13 @@ import {
   PartyPopper,
   Percent,
   RotateCcw,
+  Share2,
   Target,
   Trophy,
   XCircle,
   XOctagon,
-} from "lucide-react";import type { Question } from "@/lib/questions";
+} from "lucide-react";
+import type { Question } from "@/lib/questions";
 import { PASS_MARK, TOTAL_QUESTIONS } from "@/lib/quiz";
 import { playSound } from "@/lib/sound";
 import { cn } from "@/lib/cn";
@@ -47,6 +50,47 @@ export default function ResultsScreen({
   const skippedCount = answers.filter((a) => a === null).length;
   const percentage = Math.round((correctCount / TOTAL_QUESTIONS) * 100);
   const passed = correctCount >= PASS_MARK;
+
+  const shareResult = useCallback(async () => {
+    const url = window.location.origin;
+    const text = passed
+      ? `Uratsinze! Nabonye ${correctCount}/${TOTAL_QUESTIONS} (${percentage}%) mu kizami cy'umutekano mu muhanda. Gerageza nawe!`
+      : `Nabonye ${correctCount}/${TOTAL_QUESTIONS} (${percentage}%) mu kizami cy'umutekano mu muhanda. Gerageza nawe!`;
+    const shareData = {
+      title: "Ikizami cy'Umutekano mu Muhanda",
+      text,
+      url,
+    };
+
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share(shareData);
+        track("result_shared", {
+          score: correctCount,
+          total: TOTAL_QUESTIONS,
+          passed,
+          method: "web_share",
+        });
+        return;
+      } catch (error) {
+        // A user cancelling the native share sheet is not a failure.
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        // Other errors fall back to WhatsApp below.
+      }
+    }
+
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
+    track("result_shared", {
+      score: correctCount,
+      total: TOTAL_QUESTIONS,
+      passed,
+      method: "whatsapp",
+    });
+  }, [correctCount, passed, percentage]);
 
   // Celebrate (or console) once when the results screen appears.
   useEffect(() => {
@@ -186,6 +230,15 @@ export default function ResultsScreen({
             className={cn("h-4 w-4 transition-transform duration-300", showReview && "rotate-180")}
             aria-hidden
           />
+        </button>
+        <button
+          type="button"
+          onClick={() => void shareResult()}
+          title="Sangira amanota kuri WhatsApp cyangwa ukoreshe app isanzwe"
+          className="inline-flex items-center gap-2 rounded-full border border-rwanda-green/40 bg-rwanda-green/10 px-6 py-3 text-sm font-semibold text-rwanda-green shadow-sm transition-all duration-200 hover:border-rwanda-green hover:bg-rwanda-green/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rwanda-green active:scale-95 dark:text-emerald-300"
+        >
+          <Share2 className="h-4 w-4" aria-hidden />
+          Sangira Amanota
         </button>
       </div>
 
