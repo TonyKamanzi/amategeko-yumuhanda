@@ -20,6 +20,7 @@ import type { Question } from "@/lib/questions";
 import { PASS_MARK, TOTAL_QUESTIONS } from "@/lib/quiz";
 import { playSound } from "@/lib/sound";
 import { cn } from "@/lib/cn";
+import Fireworks from "@/components/Fireworks";
 
 type ResultsScreenProps = {
   questions: Question[];
@@ -141,6 +142,7 @@ export default function ResultsScreen({
         )}
       >
         <div aria-hidden className="imigongo-band absolute inset-x-0 top-0 h-2" />
+        {passed && <Fireworks />}
         <div
           className={cn(
             "mx-auto flex h-20 w-20 items-center justify-center rounded-3xl",
@@ -157,6 +159,7 @@ export default function ResultsScreen({
           className={cn(
             "mt-5 text-3xl font-bold tracking-tight sm:text-4xl",
             passed ? "text-emerald-700 dark:text-emerald-300" : "text-red-700 dark:text-red-300",
+            passed && "animate-pop",
           )}
         >
           {passed ? "Uratsinze! Congrats!" : "Watsizwe! Gerageza nanone!"}

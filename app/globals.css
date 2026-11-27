@@ -27,6 +27,8 @@
   --animate-shake: shake 0.4s ease-in-out;
   --animate-pop: pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   --animate-pulse-ring: pulse-ring 1.2s ease-in-out infinite;
+  --animate-firework-burst: firework-burst 1.6s ease-out both;
+  --animate-firework-ring: firework-ring 1s ease-out both;
 
   @keyframes fade-in {
     from {
@@ -85,6 +87,40 @@
     }
     50% {
       box-shadow: 0 0 0 10px rgb(239 68 68 / 0);
+    }
+  }
+
+  /* Fireworks for a passing score: particles shoot out and fade away. */
+  @keyframes firework-burst {
+    0% {
+      transform: translate(-50%, -50%) rotate(var(--fw-angle)) translateX(0) scale(0);
+      opacity: 0;
+    }
+    18% {
+      transform: translate(-50%, -50%) rotate(var(--fw-angle))
+        translateX(calc(var(--fw-distance) * 0.3)) scale(1);
+      opacity: 1;
+    }
+    70% {
+      transform: translate(-50%, -50%) rotate(var(--fw-angle))
+        translateX(calc(var(--fw-distance) * 0.8)) scale(0.8);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(-50%, -50%) rotate(var(--fw-angle))
+        translateX(var(--fw-distance)) scale(0.25);
+      opacity: 0;
+    }
+  }
+
+  @keyframes firework-ring {
+    0% {
+      transform: scale(0.3);
+      opacity: 0.85;
+    }
+    100% {
+      transform: scale(5);
+      opacity: 0;
     }
   }
 }
@@ -218,5 +254,10 @@ body {
   .imigongo-rail,
   .imigongo-band {
     animation: none;
+  }
+  .animate-firework-burst,
+  .animate-firework-ring {
+    animation: none !important;
+    opacity: 0;
   }
 }
