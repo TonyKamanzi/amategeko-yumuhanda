@@ -41,9 +41,15 @@ const demoReviews: Review[] = [
 ];
 
 function storageConfig() {
-  const url = process.env.SUPABASE_URL;
+  // Accept both the names used in Supabase's Connect dialog and the shorter
+  // server-only names from the setup guide.
+  const url =
+    process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
   // New publishable keys are preferred; the legacy anon key still works.
-  const key = process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY;
+  const key =
+    process.env.SUPABASE_PUBLISHABLE_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+    process.env.SUPABASE_ANON_KEY;
   if (!url || !key) return null;
   return { url: url.replace(/\/+$/, ""), key };
 }

@@ -23,15 +23,21 @@ or go to **Settings → API Keys**. Copy:
 - **Project URL** (looks like `https://xxxx.supabase.co`) → `SUPABASE_URL`
 - **Publishable key** (`sb_publishable_...`) → `SUPABASE_PUBLISHABLE_KEY`
 
-Add them to `.env.local` for development:
+Add them to `.env.local` (or `.env`) for development. Both the names below and
+the ones Supabase's Connect dialog prints are accepted:
 
 ```env
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxxxxxxxxxxxxxxx
+
+# Equally valid, straight from the Connect dialog:
+# NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+# NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxxxxxxxxxxxxxxx
 ```
 
 And add the same two variables in **Vercel → Project → Settings → Environment
-Variables** for production. Restart `npm run dev` after changing `.env.local`.
+Variables** for production. Restart `npm run dev` after changing the env file —
+Next.js only reads it when the process starts.
 
 Use the **publishable** key, not the **secret** (`sb_secret_...`) key. The
 publishable key is safe because the table's Row Level Security policies only
