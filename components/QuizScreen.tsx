@@ -331,7 +331,7 @@ export default function QuizScreen({
           <span>guhitamo igisubizo &middot;</span>
           <kbd className="rounded border border-border-soft bg-background px-1.5 py-0.5 font-mono text-[10px]">&larr;</kbd>
           <kbd className="rounded border border-border-soft bg-background px-1.5 py-0.5 font-mono text-[10px]">&rarr;</kbd>
-          <span>kwirata mu bibazo</span>
+          <span>Guhitamo ibibazo</span>
         </p>
       </section>
 
