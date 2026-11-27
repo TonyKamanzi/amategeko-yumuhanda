@@ -9,6 +9,7 @@ import StartScreen from "@/components/StartScreen";
 import WhatsAppLink from "@/components/WhatsAppLink";
 import QuizScreen from "@/components/QuizScreen";
 import ResultsScreen from "@/components/ResultsScreen";
+import ReviewsSection from "@/components/ReviewsSection";
 import type { Question } from "@/lib/questions";
 import {
   LOW_TIME_SECONDS,
@@ -271,6 +272,7 @@ export default function Home() {
             onRestart={startQuiz}
           />
         )}
+        {screen !== "quiz" && <ReviewsSection />}
       </main>
 
       <Footer />
