@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import PwaRegister from "@/components/PwaRegister";
+import { TEXT_SIZE_STYLES } from "@/lib/text-size";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -84,8 +85,10 @@ try {
     document.documentElement.classList.add("dark");
   }
   var storedSize = localStorage.getItem("quiz-text-size");
+  var sizeStyles = ${JSON.stringify(TEXT_SIZE_STYLES)};
   if (storedSize === "large" || storedSize === "xlarge") {
     document.documentElement.dataset.textSize = storedSize;
+    document.documentElement.style.fontSize = sizeStyles[storedSize];
   }
 } catch (e) {}
 `;

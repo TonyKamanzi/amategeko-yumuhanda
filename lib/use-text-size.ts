@@ -1,16 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useSyncExternalStore } from "react";
+import { isTextSize, TEXT_SIZE_STYLES, type TextSize } from "./text-size";
 
-export type TextSize = "normal" | "large" | "xlarge";
+export type { TextSize } from "./text-size";
 
 const STORAGE_KEY = "quiz-text-size";
 const CHANGE_EVENT = "quiz-text-size-change";
 const ORDER: TextSize[] = ["normal", "large", "xlarge"];
-
-function isTextSize(value: string | null): value is TextSize {
-  return value === "normal" || value === "large" || value === "xlarge";
-}
 
 function subscribe(callback: () => void) {
   window.addEventListener(CHANGE_EVENT, callback);
@@ -36,17 +33,21 @@ function getServerSnapshot(): TextSize {
 
 /**
  * Text-size preference with localStorage persistence, exposed via
- * useSyncExternalStore. The <html data-text-size> attribute is kept in sync
- * so the rem-based Tailwind utilities scale together with the text.
+ * useSyncExternalStore. The root font-size is applied inline as well as via
+ * the `data-text-size` attribute, so it works immediately even when a stale
+ * CSS cache delays the stylesheet rules.
  */
 export function useTextSize() {
   const textSize = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   useEffect(() => {
+    const root = document.documentElement;
     if (textSize === "normal") {
-      delete document.documentElement.dataset.textSize;
+      delete root.dataset.textSize;
+      root.style.removeProperty("font-size");
     } else {
-      document.documentElement.dataset.textSize = textSize;
+      root.dataset.textSize = textSize;
+      root.style.fontSize = TEXT_SIZE_STYLES[textSize];
     }
   }, [textSize]);
 

@@ -145,11 +145,11 @@
 /* Text-size preference for older learners. Tailwind's rem-based utilities
    scale along with the root size, keeping spacing proportional. */
 html[data-text-size="large"] {
-  font-size: 112.5%;
+  font-size: 125%;
 }
 
 html[data-text-size="xlarge"] {
-  font-size: 125%;
+  font-size: 150%;
 }
 
 body {
