@@ -29,23 +29,36 @@ const IDENTITY_KEY = "ikizami-review-identity";
 
 type Identity = { name: string; token: string };
 
+// useSyncExternalStore requires getSnapshot to return the same object until the
+// underlying storage actually changes. Cache both the raw string and the parsed
+// value so repeated reads don't create a new identity object every render.
+let cachedRaw: string | null = null;
+let cachedIdentity: Identity | null = null;
+let cacheInitialized = false;
+
 function readIdentity(): Identity | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(IDENTITY_KEY);
-    if (!raw) return null;
+    if (cacheInitialized && raw === cachedRaw) return cachedIdentity;
+    cacheInitialized = true;
+    cachedRaw = raw;
+    if (!raw) return (cachedIdentity = null);
+
     const value = JSON.parse(raw) as Partial<Identity>;
     if (
       typeof value.name === "string" &&
       typeof value.token === "string" &&
       value.token.length >= 16
     ) {
-      return { name: value.name, token: value.token };
+      return (cachedIdentity = { name: value.name, token: value.token });
     }
   } catch {
     // Ignore malformed or blocked localStorage.
   }
-  return null;
+  cacheInitialized = true;
+  cachedRaw = null;
+  return (cachedIdentity = null);
 }
 
 const IDENTITY_EVENT = "ikizami-identity-change";
