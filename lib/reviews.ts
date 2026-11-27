@@ -217,20 +217,30 @@ function summarize(reviews: Review[], total = reviews.length): ReviewsResult {
   return { reviews, average, total };
 }
 
-function validateName(value: unknown): string | null {
+function validateName(
+  value: unknown,
+): { ok: true; value: string } | { ok: false; error: string } {
   const name = typeof value === "string" ? cleanText(value) : "";
   if (name.length < 1 || name.length > MAX_NAME_LENGTH) {
-    return `Andika izina ryawe (inyuguti 1–${MAX_NAME_LENGTH}).`;
+    return {
+      ok: false,
+      error: `Andika izina ryawe (inyuguti 1–${MAX_NAME_LENGTH}).`,
+    };
   }
-  return name;
+  return { ok: true, value: name };
 }
 
-function validateComment(value: unknown): string | null {
+function validateComment(
+  value: unknown,
+): { ok: true; value: string } | { ok: false; error: string } {
   const comment = typeof value === "string" ? cleanText(value) : "";
   if (comment.length < MIN_COMMENT_LENGTH || comment.length > MAX_COMMENT_LENGTH) {
-    return `Andika igitekerezo cy'inyuguti ${MIN_COMMENT_LENGTH}–${MAX_COMMENT_LENGTH}.`;
+    return {
+      ok: false,
+      error: `Andika igitekerezo cy'inyuguti ${MIN_COMMENT_LENGTH}–${MAX_COMMENT_LENGTH}.`,
+    };
   }
-  return comment;
+  return { ok: true, value: comment };
 }
 
 export function validateReview(
@@ -240,8 +250,8 @@ export function validateReview(
     return { ok: false, error: "Ibyinjizwa ntibyemewe." };
   }
   const data = input as Record<string, unknown>;
-  const nameError = validateName(data.name);
-  if (nameError) return { ok: false, error: nameError };
+  const name = validateName(data.name);
+  if (!name.ok) return name;
 
   const rating =
     typeof data.rating === "number" ? data.rating : Number(data.rating);
@@ -249,18 +259,19 @@ export function validateReview(
     return { ok: false, error: "Hitamo igipimo cy'inyenyeri kuva kuri 1 kugeza kuri 5." };
   }
 
-  const commentError = validateComment(data.comment);
-  if (commentError) return { ok: false, error: commentError };
+  const comment = validateComment(data.comment);
+  if (!comment.ok) return comment;
 
   return {
     ok: true,
-    value: { name: nameError as string, rating, comment: commentError as string },
+    value: { name: name.value, rating, comment: comment.value },
   };
 }
 
 /** Used when editing an existing reply, where the name does not change. */
 export function validateReplyComment(value: unknown): string | null {
-  return validateComment(value);
+  const result = validateComment(value);
+  return result.ok ? null : result.error;
 }
 
 export function validateReply(
@@ -270,13 +281,13 @@ export function validateReply(
     return { ok: false, error: "Ibyinjizwa ntibyemewe." };
   }
   const data = input as Record<string, unknown>;
-  const nameError = validateName(data.name);
-  if (nameError) return { ok: false, error: nameError };
-  const commentError = validateComment(data.comment);
-  if (commentError) return { ok: false, error: commentError };
+  const name = validateName(data.name);
+  if (!name.ok) return name;
+  const comment = validateComment(data.comment);
+  if (!comment.ok) return comment;
   return {
     ok: true,
-    value: { name: nameError as string, comment: commentError as string },
+    value: { name: name.value, comment: comment.value },
   };
 }
 
@@ -558,7 +569,7 @@ export async function updateReply(
   if (!isValidId(id)) throw new StoreError("Icyifuzo ntikikwemewe.", 400);
   if (!normalized) throw new StoreError("Ugomba kuba winjiriye kugirango uhinde.", 403);
   const validated = validateComment(comment);
-  if (validated === null) throw new StoreError("Andika igitekerezo kigufi.", 400);
+  if (!validated.ok) throw new StoreError(validated.error, 400);
 
   const config = storageConfig();
   if (!config) {
@@ -571,7 +582,7 @@ export async function updateReply(
       if (stored.ownerHash !== hashToken(normalized)) {
         throw new StoreError("Uteshwa kubihindura.", 403);
       }
-      stored.comment = validated;
+      stored.comment = validated.value;
       stored.updatedAt = new Date().toISOString();
       return publicReply(withOwnership(stored, normalized) as StoredReply);
     }
@@ -588,7 +599,10 @@ export async function updateReply(
         Prefer: "return=representation",
         ...ownerHeaders(normalized),
       },
-      body: JSON.stringify({ comment: validated, updated_at: new Date().toISOString() }),
+      body: JSON.stringify({
+        comment: validated.value,
+        updated_at: new Date().toISOString(),
+      }),
       cache: "no-store",
     },
   );
