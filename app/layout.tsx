@@ -14,10 +14,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
+const title = "Ikizami cy'Umutekano mu Muhanda | Driving Theory Quiz";
+const description =
+  "Kwitegura ikizami cy'umutekano mu muhanda mu Kinyarwanda: ibibazo 20, iminota 20, gutsinda 12/20.";
+
 export const metadata: Metadata = {
-  title: "Ikizami cy'Umutekano mu Muhanda | Driving Theory Quiz",
-  description:
-    "Kwitegura ikizami cy'umutekano mu muhanda mu Kinyarwanda: ibibazo 20, iminota 20, gutsinda 12/20.",
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
   manifest: "/manifest.webmanifest",
   applicationName: "Ikizami",
   appleWebApp: {
@@ -37,6 +45,19 @@ export const metadata: Metadata = {
         type: "image/png",
       },
     ],
+  },
+  openGraph: {
+    title,
+    description,
+    url: "/",
+    siteName: "Ikizami",
+    locale: "rw_RW",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
   },
 };
 
