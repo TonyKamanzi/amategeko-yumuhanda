@@ -84,6 +84,7 @@ function isStaticAsset(pathname) {
 
 self.addEventListener("fetch", (event) => {
   const request = event.request;
+  // Non-GET requests (including POST /api/reviews) always go to the network.
   if (request.method !== "GET") return;
 
   const url = new URL(request.url);
