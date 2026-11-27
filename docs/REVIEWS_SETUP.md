@@ -4,6 +4,10 @@ Reviews are stored in Supabase and served through the Next.js route handler at
 `app/api/reviews/route.ts`. The UI lives in `components/ReviewsSection.tsx` and
 appears on the start and results screens.
 
+Supabase is a hosted PostgreSQL database with an auto-generated REST API. The
+route handler calls `https://<project>.supabase.co/rest/v1/reviews`; Row Level
+Security decides what each API key is allowed to do.
+
 ## 1. Create the table
 
 1. Create a free project at [supabase.com](https://supabase.com).
@@ -13,20 +17,28 @@ appears on the start and results screens.
 
 ## 2. Add environment variables
 
-From **Project Settings → API**, copy:
+Open your project's **Connect** dialog (top-right of the Supabase dashboard),
+or go to **Settings → API Keys**. Copy:
 
-- **Project URL** → `SUPABASE_URL`
-- **anon public** key → `SUPABASE_ANON_KEY` (do **not** use the `service_role` key)
+- **Project URL** (looks like `https://xxxx.supabase.co`) → `SUPABASE_URL`
+- **Publishable key** (`sb_publishable_...`) → `SUPABASE_PUBLISHABLE_KEY`
 
 Add them to `.env.local` for development:
 
 ```env
 SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your-anon-public-key
+SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxxxxxxxxxxxxxxx
 ```
 
 And add the same two variables in **Vercel → Project → Settings → Environment
 Variables** for production. Restart `npm run dev` after changing `.env.local`.
+
+Use the **publishable** key, not the **secret** (`sb_secret_...`) key. The
+publishable key is safe because the table's Row Level Security policies only
+allow reading and inserting reviews. Legacy `anon` keys still work via the
+older `SUPABASE_ANON_KEY` name, but Supabase is deprecating them in 2027.
+Never commit either key — `.env*` is already ignored by Git. If a key leaks,
+rotate it in **Settings → API Keys**.
 
 If the variables are missing, development uses a small in-memory demo list so
 you can exercise the UI. Production fails closed: `/api/reviews` returns `503`

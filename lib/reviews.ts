@@ -42,7 +42,8 @@ const demoReviews: Review[] = [
 
 function storageConfig() {
   const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_ANON_KEY;
+  // New publishable keys are preferred; the legacy anon key still works.
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY;
   if (!url || !key) return null;
   return { url: url.replace(/\/+$/, ""), key };
 }
@@ -125,8 +126,8 @@ export async function getReviews(): Promise<ReviewsResult> {
     `select=id,name,rating,comment,created_at&order=created_at.desc&limit=${LIST_LIMIT}`;
   const response = await fetch(`${config.url}/rest/v1/${TABLE}?${params}`, {
     headers: {
+      // New Supabase keys are not JWTs, so they belong only in `apikey`.
       apikey: config.key,
-      Authorization: `Bearer ${config.key}`,
       Prefer: "count=exact",
     },
     cache: "no-store",
@@ -160,7 +161,6 @@ export async function addReview(input: ReviewInput): Promise<Review> {
     method: "POST",
     headers: {
       apikey: config.key,
-      Authorization: `Bearer ${config.key}`,
       "Content-Type": "application/json",
       Prefer: "return=representation",
     },
