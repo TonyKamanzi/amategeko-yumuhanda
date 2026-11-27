@@ -29,7 +29,7 @@ const rules = [
   {
     icon: Award,
     title: "Gutsinda: 12/20",
-    body: `Ugomba gutsindira ${PASS_MARK}/20 (60%) cyangawa hejuru yayo.`,
+    body: `Ugomba gutsindira ${PASS_MARK}/20 (60%) cyangwa hejuru yayo.`,
   },
 ];
 
@@ -48,7 +48,7 @@ export default function StartScreen({ onStart }: StartScreenProps) {
             Tangira Uyu Munsi witegure 
           </h1>
           <p className="max-w-xl text-lg leading-relaxed text-muted">
-            Uri kwiteura Gukorera uruhushya rw&rsquo;agateganyo rwo gutwara
+            Uri kwitegura Gukorera uruhushya rw&rsquo;agateganyo rwo gutwara
             ibinyabiziga. Ibi bizagufasha kwitegura neza ikizami
             cy&rsquo;umutekano mu muhanda. Niba wumva witeguye, kanda kuri buto
             iri hasi kugirango utangire ikizami.
@@ -97,11 +97,25 @@ export default function StartScreen({ onStart }: StartScreenProps) {
 
           <li className="flex gap-2">
             <span aria-hidden>&#9702;</span>
-            Iyo ushoje ubona amanota wabonye yose ndese nibibazo watsinze. Niba
-            watsinze, uzahabwa icyemezo cyemeza ko watsinze ikizami
-            cy&rsquo;umutekano mu muhanda.
+            Iyo ushoje ubona amanota yawe n&rsquo;ibibazo watsinze byose.
+            Amanota ni ay&rsquo;ikizami cy&rsquo;ubwitonzi gusa, si icyemezo
+            cya leta.
           </li>
         </ul>
+      </section>
+
+      {/* Source & disclaimer */}
+      <section className="mt-6 rounded-2xl border border-border-soft bg-surface/70 p-5 sm:p-6">
+        <h2 className="text-sm font-bold uppercase tracking-wide text-foreground">
+          Inkomoko n&rsquo;ibimenyetso &middot; Source &amp; disclaimer
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-muted">
+          Ibibazo {TOTAL_BANK} byakuwe muri dosiye{" "}
+          <span className="font-medium text-foreground">&ldquo;Modal questions.pdf&rdquo;</span>{" "}
+          (igereranyo cy&rsquo;ikizami cy&rsquo;umutekano mu muhanda). Iyi
+          porogaramu ni iy&rsquo;kwitegura gusa: ntabwo ari ikizami cyemewe na
+          leta, kandi ntiyahabwa icyemezo cya leta uyikoresheje.
+        </p>
       </section>
 
       {/* Start button */}

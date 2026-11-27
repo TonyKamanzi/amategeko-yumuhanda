@@ -73,15 +73,19 @@ export const viewport: Viewport = {
 };
 
 /**
- * Applies the persisted theme before first paint to avoid a flash
- * of the wrong color scheme.
+ * Applies the persisted theme and text size before first paint so users never
+ * see a flash of the wrong colors or font size.
  */
-const themeInitScript = `
+const appInitScript = `
 try {
-  var stored = localStorage.getItem("quiz-theme");
+  var storedTheme = localStorage.getItem("quiz-theme");
   var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  if ((stored && stored === "dark") || (!stored && prefersDark)) {
+  if ((storedTheme && storedTheme === "dark") || (!storedTheme && prefersDark)) {
     document.documentElement.classList.add("dark");
+  }
+  var storedSize = localStorage.getItem("quiz-text-size");
+  if (storedSize === "large" || storedSize === "xlarge") {
+    document.documentElement.dataset.textSize = storedSize;
   }
 } catch (e) {}
 `;
@@ -94,7 +98,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script dangerouslySetInnerHTML={{ __html: appInitScript }} />
       </head>
       <body className="min-h-full flex flex-col">
         {children}

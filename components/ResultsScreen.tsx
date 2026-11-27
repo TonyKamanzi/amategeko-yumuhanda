@@ -333,13 +333,13 @@ export default function ResultsScreen({
                         {isChosen && !isRight && (
                           <span className="ml-2 inline-flex shrink-0 items-center gap-1 rounded-full bg-red-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-700 dark:text-red-300">
                             <XCircle className="h-3 w-3" aria-hidden />
-                            watoye
+                            Uwatoye
                           </span>
                         )}
                         {isChosen && isRight && (
                           <span className="ml-2 inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
                             <Trophy className="h-3 w-3" aria-hidden />
-                            watoye
+                            Uwatoye
                           </span>
                         )}
                       </li>
